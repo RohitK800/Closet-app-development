@@ -1,0 +1,60 @@
+/* login.css — styles for login.html (colours and buttons come from styles.css) */
+html, body.auth-page { height: 100%; }
+.auth { min-height: 100%; display: grid; grid-template-columns: minmax(320px, 5fr) 7fr; }
+
+/* Brand side */
+.auth-brand {
+  background: #1D2130; color: #fff; padding: 40px clamp(24px, 4vw, 56px);
+  display: flex; flex-direction: column; justify-content: space-between; gap: 32px;
+  position: relative; overflow: hidden;
+}
+.auth-brand::after { /* tape-measure strip along the bottom */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px;
+  background: repeating-linear-gradient(90deg, #1D2130 0 2px, transparent 2px 14px) 0 0 / 14px 6px repeat-x, #E9C443;
+}
+.auth-logo { width: 190px; max-width: 60%; height: auto; }
+.auth-head { font-size: clamp(1.8rem, 3.2vw, 2.6rem); font-weight: 700; line-height: 1.1; letter-spacing: -.02em; margin: 0 0 14px; max-width: 16ch; }
+.auth-body { color: #B9BECB; margin: 0; max-width: 38ch; }
+.looks-demo { display: flex; gap: 14px; align-items: flex-end; padding-bottom: 20px; }
+.mini-look { display: flex; flex-direction: column; gap: 5px; background: rgba(255,255,255,.06); padding: 8px; border-radius: 14px; }
+.mini-look span { display: block; width: 58px; height: 34px; border-radius: 8px; }
+.mini-look:nth-child(2) { transform: translateY(-14px); }
+
+/* Form side */
+.auth-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 18px; }
+.auth-logo-sm { display: none; width: 150px; height: auto; margin-bottom: 20px; }
+.auth-card { width: 100%; max-width: 400px; }
+.auth-tabs { display: flex; gap: 6px; background: var(--soft); padding: 5px; border-radius: 14px; margin-bottom: 26px; }
+.auth-tabs button { flex: 1; border: 0; background: transparent; padding: 9px 12px; border-radius: 10px; font-weight: 500; color: var(--muted); }
+.auth-tabs button[aria-selected="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 0 var(--line); }
+.auth-title { font-size: 1.9rem; font-weight: 700; letter-spacing: -.02em; margin: 0 0 2px; line-height: 1.15; }
+
+.field input[type=email], .field input[type=password], .field .pw input[type=text] {
+  width: 100%; padding: 11px 12px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--card);
+}
+.field input:focus { border-color: var(--ink); outline: none; }
+.field input[aria-invalid="true"] { border-color: var(--danger); }
+.label-row { display: flex; justify-content: space-between; align-items: baseline; }
+.label-row label { font-weight: 600; font-size: .92rem; margin-bottom: 6px; }
+.linkish { border: 0; background: none; padding: 0; color: var(--muted); font-size: .85rem; text-decoration: underline; text-underline-offset: 3px; }
+.pw { position: relative; }
+.pw input { padding-right: 64px !important; }
+.pw-toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); border: 0; background: var(--soft); border-radius: 8px; padding: 5px 10px; font-size: .82rem; font-weight: 600; }
+.check { display: flex; align-items: center; gap: 8px; font-size: .92rem; margin: 2px 0 10px; }
+.check input { width: 18px; height: 18px; accent-color: var(--ink); }
+.auth-submit { width: 100%; padding: 12px; margin-top: 4px; }
+.divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: .85rem; margin: 20px 0; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.google { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--card); }
+.fine { font-size: .8rem; color: var(--muted); text-align: center; margin-top: 18px; }
+.info { color: var(--ink); background: var(--soft); border-radius: 10px; padding: 8px 10px; font-size: .88rem; }
+
+@media (max-width: 800px) {
+  .auth { grid-template-columns: 1fr; }
+  .auth-brand { display: none; }
+  .auth-logo-sm { display: block; }
+  .auth-panel { justify-content: flex-start; padding-top: 40px; }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .auth-logo-sm { content: url("assets/logo-light.svg"); }
+}

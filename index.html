@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Closet — outfit planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<script src="auth.js"></script>
+<script>Auth.requireLogin();</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1 class="brand"><img class="brand-icon" src="assets/icon.svg" alt="">Closet<small>Add your clothes once. Get outfit ideas every day.</small></h1>
+    <div class="userbar"><span id="hello"></span><button type="button" class="linkout" id="logout">Log out</button></div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="style" aria-selected="true">Style me</button>
+      <button role="tab" data-tab="wardrobe" aria-selected="false">My clothes<span class="count" id="cnt"></span></button>
+      <button role="tab" data-tab="saved" aria-selected="false">Saved</button>
+    </nav>
+  </header>
+  <div class="tape" aria-hidden="true"></div>
+
+  <!-- STYLE -->
+  <section id="tab-style">
+    <div class="controls">
+      <div class="field"><span class="lbl">Where are you going?</span><div class="chips" id="occ"></div></div>
+      <div class="field"><span class="lbl">Weather</span><div class="chips" id="wx"></div></div>
+    </div>
+    <div class="row" style="justify-content:space-between;margin-bottom:12px">
+      <div><h2>Outfits for you</h2><p class="sub" id="looksSub" style="margin:0">Picked by colour matching from your own clothes.</p></div>
+      <button class="btn ghost" id="shuffle">Show different ones</button>
+    </div>
+    <div id="looks" class="looks"></div>
+    <div class="ai" id="aiBox" hidden>
+      <h2>Ask the AI stylist</h2>
+      <p class="sub">Get three looks with a reason for each, based on your clothes and today's plan.</p>
+      <div class="row"><button class="btn yellow" id="askAi">Ask the stylist</button><button class="btn ghost" id="stopAi" hidden>Stop</button></div>
+      <div class="status" id="aiStatus"></div>
+      <div id="aiLooks" class="looks"></div>
+    </div>
+  </section>
+
+  <!-- WARDROBE -->
+  <section id="tab-wardrobe" hidden>
+    <div class="row" style="justify-content:space-between">
+      <div><h2>My clothes</h2><p class="sub" style="margin:0">Add each piece with its colour so outfits can be matched.</p></div>
+      <button class="btn" id="addBtn">Add a piece</button>
+    </div>
+    <div class="chips" id="typeFilter" style="margin-top:14px"></div>
+    <div id="grid" class="grid"></div>
+  </section>
+
+  <!-- SAVED -->
+  <section id="tab-saved" hidden>
+    <h2>Saved outfits</h2>
+    <p class="sub">Looks you liked, ready for the next time you can't decide.</p>
+    <div id="savedLooks" class="looks"></div>
+  </section>
+
+  <p class="foot" id="storeNote"></p>
+</div>
+
+<dialog id="dlg">
+  <form class="dlg" method="dialog" id="itemForm">
+    <h2 style="margin-bottom:14px">Add a piece</h2>
+    <div class="field"><label for="fName">Name</label><input type="text" id="fName" maxlength="40" placeholder="e.g. White linen shirt"></div>
+    <div class="field"><span class="lbl">Type</span><div class="chips" id="fType"></div></div>
+    <div class="field"><span class="lbl">Colour</span><div class="swatches" id="fColor"></div><div class="hint" id="fColorName">Pick the main colour</div></div>
+    <div class="field"><span class="lbl">Good for (pick any)</span><div class="chips" id="fStyle"></div></div>
+    <div class="field"><span class="lbl">Weather</span><div class="chips" id="fSeason"></div></div>
+    <div class="field"><span class="lbl">Photo (optional)</span>
+      <div class="photo-drop"><div class="photo-prev" id="fPrev">No photo</div>
+        <div><input type="file" id="fPhoto" accept="image/*"><div class="hint">Stored small to save space.</div></div></div>
+    </div>
+    <div class="err" id="fErr"></div>
+    <div class="row" style="justify-content:flex-end">
+      <button type="button" class="btn ghost" id="fCancel">Cancel</button>
+      <button type="button" class="btn" id="fSave">Save piece</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
