@@ -68,9 +68,3 @@ The app also stores a wear log (which outfit was worn on which day), saved outfi
 This project successfully develops Closet, a smart digital wardrobe that helps users decide what to wear using the clothes they already own. By combining colour-harmony rules, fit balance, occasion and weather filters, and wear-history tracking, the app suggests complete outfits and encourages the use of forgotten pieces.
 The interactive interface, with its illustrated wardrobe, smooth animations and mobile-friendly design, makes managing clothes simple and enjoyable. Although the current prototype stores data only in the browser and uses demo authentication, it provides a complete, working foundation for real accounts, cloud sync and AI-based styling.
 Overall, the project demonstrates how everyday personal data can be turned into practical, personalised recommendations using web technologies.
-
-https://github.com/RohitK800/Closet-app-development
-
-## Architecture Diagram
-
-![Architecture Diagram](docs/architecture.png)
