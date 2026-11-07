@@ -15,6 +15,10 @@ function setMode(next) {
   $("submit").textContent = signup ? "Create account" : "Log in";
   $("password").autocomplete = signup ? "new-password" : "current-password";
   clearErrors();
+  moveAuthInk();
+  // fade the form fields in when switching between Log in and Sign up
+  const card = document.querySelector(".auth-card form");
+  card.classList.remove("swap"); void card.offsetWidth; card.classList.add("swap");
 }
 $("tabLogin").onclick = () => setMode("login");
 $("tabSignup").onclick = () => setMode("signup");
@@ -45,22 +49,45 @@ function validate() {
   return true;
 }
 
+// Smooth hand-off to the main screen: a quick "Welcome" on the button, then the page slides away
+function leavePage() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return Promise.resolve();
+  const btn = $("submit");
+  btn.classList.add("success");
+  btn.textContent = "Welcome to Closet";
+  return new Promise(res => setTimeout(() => {
+    document.documentElement.classList.add("leaving");
+    setTimeout(res, 420);
+  }, 450));
+}
+setTimeout(() => document.documentElement.classList.remove("page-enter"), 1800);
+
+// Tab highlight glides between Log in and Sign up
+function moveAuthInk() {
+  const b = document.querySelector('.auth-tabs button[aria-selected="true"]'), ink = $("authInk");
+  if (b && ink) { ink.style.width = b.offsetWidth + "px"; ink.style.transform = `translateX(${b.offsetLeft}px)`; }
+}
+window.addEventListener("resize", moveAuthInk);
+
 $("form").addEventListener("submit", async e => {
   e.preventDefault();
   clearErrors();
   if (!validate()) return;
   const btn = $("submit"); btn.disabled = true;
   const label = btn.textContent; btn.textContent = mode === "signup" ? "Creating…" : "Logging in…";
+  let leaving = false;
   try {
     const remember = $("remember").checked;
     if (mode === "signup") await Auth.signUp($("name").value, $("email").value, $("password").value, remember);
     else await Auth.signIn($("email").value, $("password").value, remember);
+    leaving = true;
+    await leavePage();
     window.location.replace("index.html");
   } catch (err) {
     showError(err.message || "Something went wrong. Try again.", err.code === "exists" ? "email" : null);
     if (err.code === "exists") setTimeout(() => setMode("login"), 1400);
   } finally {
-    btn.disabled = false; btn.textContent = label;
+    if (!leaving) { btn.disabled = false; btn.textContent = label; }
   }
 });
 
@@ -74,3 +101,5 @@ $("google").onclick = () => {
 };
 
 setMode(new URLSearchParams(location.search).get("mode") === "signup" ? "signup" : "login");
+requestAnimationFrame(() => { moveAuthInk(); requestAnimationFrame(() => $("authInk").classList.add("ready")); });
+document.fonts?.ready.then(moveAuthInk);

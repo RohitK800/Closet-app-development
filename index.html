@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Closet — outfit planner</title>
+<title>Closet — your digital wardrobe</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -16,44 +16,107 @@
 <body>
 <div class="wrap">
   <header class="top">
-    <h1 class="brand"><img class="brand-icon" src="assets/icon.svg" alt="">Closet<small>Add your clothes once. Get outfit ideas every day.</small></h1>
     <div class="userbar"><span id="hello"></span><button type="button" class="linkout" id="logout">Log out</button></div>
-    <nav class="tabs" role="tablist">
-      <button role="tab" data-tab="style" aria-selected="true">Style me</button>
-      <button role="tab" data-tab="wardrobe" aria-selected="false">My clothes<span class="count" id="cnt"></span></button>
-      <button role="tab" data-tab="saved" aria-selected="false">Saved</button>
+    <h1 class="brand">
+      <!-- Logo drawn inline so the hanger can swing -->
+      <svg class="brand-icon" id="brandIcon" viewBox="0 0 512 512" aria-hidden="true">
+        <rect width="512" height="512" rx="116" fill="#1D2130"/>
+        <g class="hanger"><g transform="translate(0 30)">
+          <path d="M256 208 V186 C256 170 280 162 280 136 C280 114 264 100 244 100 C224 100 210 114 210 132" fill="none" stroke="#fff" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M256 208 L104 318 M256 208 L408 318" fill="none" stroke="#fff" stroke-width="26" stroke-linecap="round"/>
+          <rect x="92" y="318" width="328" height="42" rx="10" fill="#E9C443"/>
+          <path d="M126 330v16M190 330v16M254 330v16M318 330v16M382 330v16M142 330v9M158 330v9M174 330v9M206 330v9M222 330v9M238 330v9M270 330v9M286 330v9M302 330v9M334 330v9M350 330v9M366 330v9" stroke="#1D2130" stroke-width="4"/>
+        </g></g>
+      </svg>Closet<small>Your digital wardrobe, styled smartly.</small>
+    </h1>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button role="tab" data-tab="style" aria-selected="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5.5c0-1.4 1-2.5 2.3-2.5S16.5 4 16.5 5.2c0 1.6-2.2 2-4.5 3.8L3 15.5h18L12 9"/></svg>
+        <span>Style me</span></button>
+      <button role="tab" data-tab="wardrobe" aria-selected="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 3v18M9.5 11v2M14.5 11v2"/></svg>
+        <span>My clothes<span class="count" id="cnt"></span></span></button>
+      <button role="tab" data-tab="saved" aria-selected="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
+        <span>Saved</span></button>
     </nav>
   </header>
   <div class="tape" aria-hidden="true"></div>
 
-  <!-- STYLE -->
+  <!-- STYLE ME -->
   <section id="tab-style">
     <div class="controls">
       <div class="field"><span class="lbl">Where are you going?</span><div class="chips" id="occ"></div></div>
-      <div class="field"><span class="lbl">Weather</span><div class="chips" id="wx"></div></div>
+      <div class="field">
+        <div class="lbl-row"><span class="lbl">Weather</span>
+          <button type="button" class="linkish" id="wxAuto">Use today's weather</button></div>
+        <div class="chips" id="wx"></div>
+        <div class="hint" id="wxNote" aria-live="polite"></div>
+      </div>
     </div>
-    <div class="row" style="justify-content:space-between;margin-bottom:12px">
-      <div><h2>Outfits for you</h2><p class="sub" id="looksSub" style="margin:0">Picked by colour matching from your own clothes.</p></div>
+
+    <div class="pinbar" id="pinbar" hidden></div>
+
+    <div class="row head-row">
+      <div><h2>Outfits for you</h2><p class="sub" id="looksSub">Picked by Harmony Logic from your own clothes.</p></div>
       <button class="btn ghost" id="shuffle">Show different ones</button>
     </div>
     <div id="looks" class="looks"></div>
-    <div class="ai" id="aiBox" hidden>
-      <h2>Ask the AI stylist</h2>
-      <p class="sub">Get three looks with a reason for each, based on your clothes and today's plan.</p>
-      <div class="row"><button class="btn yellow" id="askAi">Ask the stylist</button><button class="btn ghost" id="stopAi" hidden>Stop</button></div>
-      <div class="status" id="aiStatus"></div>
-      <div id="aiLooks" class="looks"></div>
-    </div>
+    <div id="tip"></div>
   </section>
 
-  <!-- WARDROBE -->
+  <!-- MY CLOTHES -->
   <section id="tab-wardrobe" hidden>
-    <div class="row" style="justify-content:space-between">
-      <div><h2>My clothes</h2><p class="sub" style="margin:0">Add each piece with its colour so outfits can be matched.</p></div>
+    <div class="row head-row">
+      <div><h2>My clothes</h2><p class="sub" id="closetSummary">Add each piece with its colour so outfits can be matched.</p></div>
       <button class="btn" id="addBtn">Add a piece</button>
     </div>
-    <div class="chips" id="typeFilter" style="margin-top:14px"></div>
-    <div id="grid" class="grid"></div>
+    <!-- The wardrobe: your clothes hang on the rail, shoes and accessories sit on the shelf -->
+    <div class="wardrobe" id="wardrobe">
+      <div class="wd-inner">
+        <div class="wd-glow" aria-hidden="true"></div>
+        <div class="wd-bar" aria-hidden="true"></div>
+        <div class="wd-rail" id="rail" role="list" aria-label="Clothes on the rail"></div>
+        <div class="wd-shelf" id="shelf" role="list" aria-label="Shoes and accessories"></div>
+      </div>
+      <div class="door left" aria-hidden="true"><i></i><i></i><b></b></div>
+      <div class="door right" aria-hidden="true"><i></i><i></i><b></b></div>
+    </div>
+
+    <div id="closetEmpty"></div>
+
+    <div id="closetTools">
+      <div class="finder">
+        <input type="search" id="q" placeholder="Search your clothes" aria-label="Search your clothes">
+        <button type="button" class="btn ghost filter-btn" id="filterBtn" aria-expanded="false" aria-controls="filters">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filters<span class="badge" id="filterCount" hidden></span>
+        </button>
+        <select id="sortSel" aria-label="Sort">
+          <option value="type">By type</option>
+          <option value="new">Newest first</option>
+          <option value="least">Least worn</option>
+          <option value="most">Most worn</option>
+        </select>
+      </div>
+      <div class="filters" id="filters" hidden>
+        <select id="fColorSel" aria-label="Filter by colour"></select>
+        <select id="fOccSel" aria-label="Filter by occasion"></select>
+        <select id="fSeasonSel" aria-label="Filter by weather"></select>
+        <button type="button" class="linkish" id="clearFilters">Clear filters</button>
+      </div>
+      <div class="chips" id="typeFilter"></div>
+      <div id="grid" class="grid"></div>
+    </div>
+
+    <details class="backup">
+      <summary>Backup and restore</summary>
+      <p>Your clothes are saved in this browser only. Download a backup so you never lose them.</p>
+      <div class="row">
+        <button type="button" class="btn ghost" id="exportBtn">Download backup</button>
+        <label class="btn ghost" for="importFile" tabindex="0">Restore backup</label>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </details>
   </section>
 
   <!-- SAVED -->
@@ -62,29 +125,34 @@
     <p class="sub">Looks you liked, ready for the next time you can't decide.</p>
     <div id="savedLooks" class="looks"></div>
   </section>
-
-  <p class="foot" id="storeNote"></p>
 </div>
 
+<!-- Add / edit a piece -->
 <dialog id="dlg">
   <form class="dlg" method="dialog" id="itemForm">
-    <h2 style="margin-bottom:14px">Add a piece</h2>
+    <h2 id="dlgTitle">Add a piece</h2>
     <div class="field"><label for="fName">Name</label><input type="text" id="fName" maxlength="40" placeholder="e.g. White linen shirt"></div>
-    <div class="field"><span class="lbl">Type</span><div class="chips" id="fType"></div></div>
-    <div class="field"><span class="lbl">Colour</span><div class="swatches" id="fColor"></div><div class="hint" id="fColorName">Pick the main colour</div></div>
-    <div class="field"><span class="lbl">Good for (pick any)</span><div class="chips" id="fStyle"></div></div>
-    <div class="field"><span class="lbl">Weather</span><div class="chips" id="fSeason"></div></div>
     <div class="field"><span class="lbl">Photo (optional)</span>
       <div class="photo-drop"><div class="photo-prev" id="fPrev">No photo</div>
-        <div><input type="file" id="fPhoto" accept="image/*"><div class="hint">Stored small to save space.</div></div></div>
+        <div><input type="file" id="fPhoto" accept="image/*"><div class="hint">We'll guess the colour from the photo.</div></div></div>
     </div>
-    <div class="err" id="fErr"></div>
-    <div class="row" style="justify-content:flex-end">
+    <div class="field"><span class="lbl">Type</span><div class="chips" id="fType"></div></div>
+    <div class="field"><span class="lbl">Colour</span><div class="swatches" id="fColor"></div><div class="hint" id="fColorName">Pick the main colour</div></div>
+    <div class="field"><span class="lbl">Fit</span><div class="chips" id="fFit"></div></div>
+    <div class="field"><span class="lbl">Good for (pick any)</span><div class="chips" id="fStyle"></div></div>
+    <div class="field"><span class="lbl">Weather</span><div class="chips" id="fSeason"></div></div>
+    <div class="err" id="fErr" role="alert"></div>
+    <div class="row dlg-actions">
+      <button type="button" class="btn danger-ghost" id="fDelete" hidden>Remove from closet</button>
+      <span class="spacer"></span>
       <button type="button" class="btn ghost" id="fCancel">Cancel</button>
       <button type="button" class="btn" id="fSave">Save piece</button>
     </div>
   </form>
 </dialog>
+
+<!-- Clothing-tag messages -->
+<div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script src="app.js"></script>
 </body>

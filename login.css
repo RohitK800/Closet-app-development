@@ -15,18 +15,33 @@ html, body.auth-page { height: 100%; }
 .auth-logo { width: 190px; max-width: 60%; height: auto; }
 .auth-head { font-size: clamp(1.8rem, 3.2vw, 2.6rem); font-weight: 700; line-height: 1.1; letter-spacing: -.02em; margin: 0 0 14px; max-width: 16ch; }
 .auth-body { color: #B9BECB; margin: 0; max-width: 38ch; }
-.looks-demo { display: flex; gap: 14px; align-items: flex-end; padding-bottom: 20px; }
-.mini-look { display: flex; flex-direction: column; gap: 5px; background: rgba(255,255,255,.06); padding: 8px; border-radius: 14px; }
-.mini-look span { display: block; width: 58px; height: 34px; border-radius: 8px; }
-.mini-look:nth-child(2) { transform: translateY(-14px); }
+.looks-demo { display: flex; gap: 14px; align-items: flex-end; padding-bottom: 26px; }
+.look-card {
+  margin: 0; flex: 0 1 132px; min-width: 0;
+  background: #F1ECE2; border-radius: 16px; padding: 10px 10px 12px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.28);
+}
+.look-card svg { display: block; width: 100%; height: auto; max-height: 34vh; }
+.look-card figcaption { margin-top: 8px; line-height: 1.25; color: #1D2130; }
+.look-card figcaption b { display: block; font-size: .92rem; font-weight: 700; }
+.look-card figcaption span { display: block; font-size: .72rem; color: #5E6372; }
+.look-card:nth-child(1) { transform: rotate(-3deg); }
+.look-card:nth-child(2) { transform: translateY(-18px); }
+.look-card:nth-child(3) { transform: rotate(3deg); }
+@media (prefers-reduced-motion: no-preference) {
+  .look-card { transition: transform .25s ease; }
+  .look-card:hover { transform: translateY(-24px) rotate(0); }
+}
+@media (max-height: 760px) { .auth-head { font-size: 1.8rem; } .look-card svg { max-height: 26vh; } }
 
 /* Form side */
 .auth-panel { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 18px; }
 .auth-logo-sm { display: none; width: 150px; height: auto; margin-bottom: 20px; }
 .auth-card { width: 100%; max-width: 400px; }
 .auth-tabs { display: flex; gap: 6px; background: var(--soft); padding: 5px; border-radius: 14px; margin-bottom: 26px; }
-.auth-tabs button { flex: 1; border: 0; background: transparent; padding: 9px 12px; border-radius: 10px; font-weight: 500; color: var(--muted); }
-.auth-tabs button[aria-selected="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 0 var(--line); }
+.auth-tabs { position: relative; }
+.auth-tabs button { position: relative; z-index: 1; flex: 1; border: 0; background: transparent; padding: 9px 12px; border-radius: 10px; font-weight: 500; color: var(--muted); }
+.auth-tabs button[aria-selected="true"] { color: var(--ink); }
 .auth-title { font-size: 1.9rem; font-weight: 700; letter-spacing: -.02em; margin: 0 0 2px; line-height: 1.15; }
 
 .field input[type=email], .field input[type=password], .field .pw input[type=text] {
@@ -58,3 +73,57 @@ html, body.auth-page { height: 100%; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .auth-logo-sm { content: url("assets/logo-light.svg"); }
 }
+
+/* ---------- Smooth motion on the login page ---------- */
+.auth-submit.success, .auth-submit.success:disabled { background: #2F7D4F; border-color: #2F7D4F; color: #fff; opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  /* Arriving: the brand panel slides in, the outfit cards drop onto the table, the form rises */
+  .page-enter .auth-brand { animation: brand-in .7s cubic-bezier(.2,.8,.2,1) both; }
+  .page-enter .auth-pitch { animation: login-rise .6s ease-out .25s both; }
+  .page-enter .look-card { animation: card-drop .7s cubic-bezier(.2,1.2,.4,1) both; }
+  .page-enter .look-card:nth-child(1) { animation-delay: .45s; }
+  .page-enter .look-card:nth-child(2) { animation-delay: .55s; }
+  .page-enter .look-card:nth-child(3) { animation-delay: .65s; }
+  .page-enter .auth-card, .page-enter .auth-logo-sm { animation: login-rise .6s cubic-bezier(.2,.8,.2,1) .15s both; }
+
+  /* Switching between Log in and Sign up */
+  .auth-tabs .tab-ink.ready { transition: transform .38s cubic-bezier(.3,1.25,.5,1), width .38s cubic-bezier(.3,1.25,.5,1); }
+  .auth-card form.swap { animation: login-rise .3s ease-out both; }
+  #nameField:not([hidden]) { animation: login-rise .3s ease-out both; }
+
+  /* Login succeeded: the button turns green, then both halves slide away */
+  .auth-submit.success { animation: success-pop .35s cubic-bezier(.3,1.6,.5,1); }
+  .leaving .auth-brand { animation: brand-out .42s ease-in both; }
+  .leaving .auth-panel { animation: panel-out .42s ease-in both; }
+
+  @keyframes brand-in { from { opacity: 0; translate: -40px 0; } to { opacity: 1; translate: 0 0; } }
+  @keyframes login-rise { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
+  @keyframes card-drop { from { opacity: 0; translate: 0 -60px; } to { opacity: 1; translate: 0 0; } }
+  @keyframes success-pop { 0% { transform: scale(.96); } 100% { transform: scale(1); } }
+  @keyframes brand-out { to { opacity: 0; translate: -60px 0; } }
+  @keyframes panel-out { to { opacity: 0; translate: 0 -24px; } }
+}
+/* =====================================================================
+   CLOSET THEME for the login page
+   ===================================================================== */
+/* Left panel: the wardrobe photo under a navy wash so the white text reads clearly */
+.auth-brand{
+  background:
+    linear-gradient(180deg,rgba(24,32,48,.82) 0%,rgba(24,32,48,.62) 45%,rgba(24,32,48,.88) 100%),
+    url("assets/closet-bg.jpg") 50% 35% / cover no-repeat;
+}
+.auth-head{font-family:var(--font-head);font-weight:600;letter-spacing:-.015em;line-height:1.08}
+.auth-body{color:#E4DED3}
+
+/* Right side: the form sits on a frosted card over the photo */
+.auth-card{
+  background:var(--glass);border:1px solid var(--glass-edge);border-radius:24px;padding:28px 26px;
+  -webkit-backdrop-filter:blur(16px) saturate(1.1);backdrop-filter:blur(16px) saturate(1.1);
+  box-shadow:0 24px 60px rgba(31,42,61,.14);
+}
+.auth-title{font-family:var(--font-head);font-weight:600;font-size:2.1rem;letter-spacing:-.015em}
+.auth-tabs{background:var(--soft)}
+.field input[type=email],.field input[type=password],.field .pw input[type=text],.field input[type=text]{background:var(--card)}
+.google{background:var(--card)}
+.look-card{background:#F7F2E9}
+@media (max-width:800px){ .auth-card{padding:22px 18px;border-radius:20px} }
